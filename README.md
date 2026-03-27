@@ -1,88 +1,93 @@
-# Heart Disease Risk Predictor
+# VitalScan - Heart Disease Risk Predictor
 
-A machine learning web application that predicts the likelihood of heart disease based on clinical health parameters. Built as a BYOP (Bring Your Own Project) submission for the **Fundamentals of AI/ML** course.
+A machine learning project that predicts the likelihood of heart disease based on clinical health parameters. Built as a BYOP (Bring Your Own Project) submission for the Fundamentals of AI/ML course.
 
----
-
-##  Problem Statement :
-
-Cardiovascular disease is the leading cause of death in India, responsible for over 28% of all fatalities. Most people are unaware of their risk until symptoms appear — often too late. This project provides a simple, accessible tool for early self-assessment using well-established clinical indicators from the UCI Heart Disease dataset.
+This project runs entirely from the terminal. There is no web interface, no browser, and no localhost server. All input is taken from the shell and all output is printed to the shell.
 
 ---
 
-## What It Does :
+## Problem Statement
 
-- Takes 13 clinical inputs (age, cholesterol, blood pressure, etc.)
-- Runs them through a trained ML classification model
-- Returns a **risk prediction** (Disease / No Disease) with a **confidence score**
-- Categorises risk as Low 🟢 / Moderate 🟡 / High 🔴
+Cardiovascular disease is the leading cause of death in India, responsible for over 28% of all fatalities. Most people are unaware of their risk until symptoms appear, often too late for early intervention. This project provides a simple, accessible command-line tool for early self-assessment using well-established clinical indicators from the UCI Heart Disease dataset.
 
 ---
 
-##  Tech Stack :
+## What It Does
 
-| Layer | Tools |
-|---|---|
-| Language | Python 3.10+ |
-| Data Processing | Pandas, NumPy |
-| ML Models | scikit-learn (Logistic Regression, Random Forest, SVM) |
-| Evaluation | classification_report, ROC-AUC, cross-validation |
-| Visualisation | Matplotlib, Seaborn |
-| Web App | Streamlit |
-| Model Persistence | Joblib |
+- Accepts 13 clinical inputs one by one through the terminal
+- Passes them through a trained machine learning classification model
+- Prints a risk prediction with a probability score directly in the terminal
+- Categorises the result as Low, Moderate, or High risk
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
+
+| Layer             | Tools                                              |
+|-------------------|----------------------------------------------------|
+| Language          | Python 3.10+                                       |
+| Data Processing   | Pandas, NumPy                                      |
+| ML Models         | scikit-learn (Logistic Regression, Random Forest, SVM) |
+| Evaluation        | classification_report, ROC-AUC, cross-validation  |
+| Visualisation     | Matplotlib, Seaborn                                |
+| Model Persistence | Joblib                                             |
+| Interface         | Pure terminal (stdin / stdout)                     |
+
+---
+
+## Project Structure
 
 ```
-heart-disease-predictor/
-│
-├── data/
-│   └── heart.csv                   # UCI Heart Disease dataset
-│
-├── models/
-│   ├── model.pkl                   # Saved best model (after training)
-│   ├── scaler.pkl                  # Saved StandardScaler
-│   ├── confusion_matrix.png        # Generated after training
-│   └── feature_importance.png      # Generated if Random Forest wins
-│
-├── notebooks/
-│   └── eda_and_training.ipynb      # Exploratory Data Analysis notebook
-│
-├── src/
-│   ├── preprocess.py               # Data loading and preprocessing
-│   └── train.py                    # Model training and evaluation
-│
-├── app/
-│   └── app.py                      # Streamlit web application
-│
-├── requirements.txt
-├── .gitignore
-└── README.md
+VitalScan/
+|
+|-- app.py                  # Main entry point (CLI application)
+|-- train.py                # Model training and evaluation script
+|-- requirements.txt        # All dependencies
+|-- README.md
+|-- .gitignore
+|
+|-- data/
+|   `-- heart.csv           # UCI Heart Disease dataset
+|
+|-- models/
+|   |-- model.pkl           # Saved best model (generated after training)
+|   |-- scaler.pkl          # Saved StandardScaler (generated after training)
+|   |-- confusion_matrix.png
+|   `-- feature_importance.png
+|
+`-- src/
+    |-- __init__.py
+    `-- preprocess.py       # Data loading and preprocessing logic
 ```
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup and Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/heart-disease-predictor.git
-cd heart-disease-predictor
+git clone https://github.com/your-username/vitalscan.git
+cd vitalscan
 ```
 
 ### 2. Create a virtual environment
 
 ```bash
-python -m venv venv
+python -m venv .venv
+```
 
-# Activate (Mac/Linux)
-source venv/bin/activate
+Activate it:
 
-# Activate (Windows)
-venv\Scripts\activate
+```bash
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+
+# Windows (Git Bash)
+source .venv/Scripts/activate
+
+# Mac / Linux
+source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
@@ -91,103 +96,130 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Download the dataset
+### 4. Train the model
 
-Download `heart.csv` from Kaggle:
-👉 https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
+This must be done once before running the app. It generates the model and scaler files inside the models/ folder.
 
-Place it in the `data/` folder:
+```bash
+python train.py
 ```
-data/heart.csv
+
+What this does:
+- Loads and preprocesses heart.csv
+- Trains and compares Logistic Regression, Random Forest, and SVM
+- Selects the best model automatically
+- Saves model.pkl and scaler.pkl to models/
+- Generates confusion_matrix.png and feature_importance.png
+
+---
+
+## How to Run
+
+```bash
+python app.py
+```
+
+The app will ask you 13 clinical questions one by one in the terminal. After you answer all of them, it prints the prediction result directly in the terminal.
+
+To retrain the model:
+
+```bash
+python app.py --retrain
+```
+
+To check the version:
+
+```bash
+python app.py --version
 ```
 
 ---
 
-## 🚀 How to Run
+## User Flow
 
-### Step 1 — Train the model
-
-```bash
-python src/train.py
+```
+Run: python app.py
+        |
+        v
+Answer Question 1 of 13  (e.g. Age)
+        |
+        v
+Answer Question 2 of 13  (e.g. Sex)
+        |
+       ...
+        |
+        v
+Answer Question 13 of 13  (e.g. Thalassemia)
+        |
+        v
+Model runs prediction
+        |
+        v
+Result printed in terminal:
+  - Probability percentage
+  - Visual risk bar
+  - Risk level: LOW / MODERATE / HIGH
+  - Advice message
+        |
+        v
+Option to run another prediction or exit
 ```
 
-This will:
-- Load and preprocess the dataset
-- Train and compare Logistic Regression, Random Forest, and SVM
-- Save the best model to `models/model.pkl`
-- Save the scaler to `models/scaler.pkl`
-- Generate evaluation plots in `models/`
-
-### Step 2 — Launch the web app
-
-```bash
-streamlit run app/app.py
-```
-
-Then open your browser at `http://localhost:8501`
+Each question includes a hint showing valid values. If an invalid value is entered, the app rejects it and asks again. No input is sent to the model until all 13 answers are validated.
 
 ---
 
-## 📊 Dataset
+## Dataset
 
-**Source:** UCI Heart Disease Dataset (Cleveland subset)  
-**Samples:** 303 patients  
-**Features:** 13 clinical attributes  
+**Source:** UCI Heart Disease Dataset (Cleveland subset)
+**Samples:** 303 patients
+**Features:** 13 clinical attributes
 **Target:** 0 = No Disease, 1 = Disease
 
-| Feature | Description |
-|---|---|
-| age | Age in years |
-| sex | 1 = Male, 0 = Female |
-| cp | Chest pain type (0–3) |
-| trestbps | Resting blood pressure (mm Hg) |
-| chol | Serum cholesterol (mg/dl) |
-| fbs | Fasting blood sugar > 120 mg/dl (1 = true) |
-| restecg | Resting ECG results (0–2) |
-| thalach | Maximum heart rate achieved |
-| exang | Exercise induced angina (1 = yes) |
-| oldpeak | ST depression induced by exercise |
-| slope | Slope of peak exercise ST segment (0–2) |
-| ca | Number of major vessels coloured by fluoroscopy (0–3) |
-| thal | Thalassemia type (0–3) |
+| Feature  | Description                                      |
+|----------|--------------------------------------------------|
+| age      | Age in years                                     |
+| sex      | 1 = Male, 0 = Female                             |
+| cp       | Chest pain type (0-3)                            |
+| trestbps | Resting blood pressure (mm Hg)                   |
+| chol     | Serum cholesterol (mg/dl)                        |
+| fbs      | Fasting blood sugar > 120 mg/dl (1 = true)       |
+| restecg  | Resting ECG results (0-2)                        |
+| thalach  | Maximum heart rate achieved                      |
+| exang    | Exercise induced angina (1 = yes)                |
+| oldpeak  | ST depression induced by exercise                |
+| slope    | Slope of peak exercise ST segment (0-2)          |
+| ca       | Number of major vessels coloured by fluoroscopy (0-3) |
+| thal     | Thalassemia type (0-2)                           |
 
 ---
 
-## 📈 Model Performance
+## Model Performance
 
-After training, you'll see a comparison like:
+After training, the terminal prints a comparison like:
 
 ```
-Logistic Regression   → Acc: 0.8525 | AUC: 0.9201 | CV: 0.8416
-Random Forest         → Acc: 0.8689 | AUC: 0.9312 | CV: 0.8350
-SVM                   → Acc: 0.8361 | AUC: 0.9104 | CV: 0.8317
+Logistic Regression   -> Acc: 0.8033 | AUC: 0.8690 | CV: 0.8349
+Random Forest         -> Acc: 0.8361 | AUC: 0.9091 | CV: 0.8382
+SVM                   -> Acc: 0.8361 | AUC: 0.8864 | CV: 0.8183
+
+Best model: Random Forest
 ```
 
-The best model is automatically selected and saved.
+The best model is automatically selected and saved to models/model.pkl.
 
 ---
 
-## 🖥️ App Preview
+## Disclaimer
 
-The Streamlit app features:
-- Input sliders and dropdowns for all 13 features
-- One-click prediction
-- Probability score with visual progress bar
-- Risk level indicator (Low / Moderate / High)
-- Expandable input summary table
+This tool is built for educational purposes only as part of a course project. It is not a medical device and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional.
 
 ---
 
-## ⚠️ Disclaimer
+## Author
 
-This tool is built for **educational purposes only** as part of a course project. It is **not a medical device** and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional.
-
----
-
-## 👩‍💻 Author
-
-**[SARAH AHMED]**  
-**[REG NO: 25BCE11375]**
-**[CSE (CORE)]**
-Fundamentals of AI/ML — BYOP Submission  
+**Sarah Ahmed**
+Registration No: 25BCE11375
+CSE (Core)
+Fundamentals of AI/ML — BYOP Submission
 VIT | VITyarthi Platform
